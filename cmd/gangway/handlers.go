@@ -87,8 +87,14 @@ func serveTemplate(tmplFile string, data interface{}, w http.ResponseWriter) {
 	if err != nil {
 		log.Errorf("Failed to parse template: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	tmpl.ExecuteTemplate(w, tmplFile, data)
+
+	err = tmpl.ExecuteTemplate(w, tmplFile, data)
+	if err != nil {
+		log.Errorf("Failed to execute template: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func generateKubeConfig(cfg *userInfo) clientcmdapi.Config {
